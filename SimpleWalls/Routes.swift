@@ -84,6 +84,15 @@ func uploadPost(title: String?, published: Bool, imageURL: String?) async -> Dat
     return data
 }
 
+//update post
+func updatePost(id: Int, title: String?, imageURL: String?, published: Bool) async -> Data {
+    let userData = UpdatePostBody(title: title, imageURL: imageURL, published: published)
+    guard let encoded = try? JSONEncoder().encode(userData) else { return Data() }
+    
+    let data = await putRequest(body: encoded, API: "/post/\(id)")
+    return data
+}
+
 //delete post
 func deletePost(postId: Int) async -> Data {
     let data = await deleteRequest(API: "/post/\(postId)")
@@ -97,20 +106,11 @@ func postById(_ id: Int) async -> Data {
 }
 
 //search post and user
-func searchRequest(textField: String) async -> Data {
+func searchRequest(_ API: String, textField: String) async -> Data {
     let userData = SearchBody(textField: textField)
     guard let encoded = try? JSONEncoder().encode(userData) else { return Data() }
     
-    let data = await postRequest(body: encoded, API: "/search")
-    return data
-}
-
-//set publish post
-func updatePost(id: Int, title: String?, imageURL: String?, published: Bool) async -> Data {
-    let userData = UpdatePostBody(title: title, imageURL: imageURL, published: published)
-    guard let encoded = try? JSONEncoder().encode(userData) else { return Data() }
-    
-    let data = await putRequest(body: encoded, API: "/post/\(id)")
+    let data = await postRequest(body: encoded, API: "/\(API)/search")
     return data
 }
 

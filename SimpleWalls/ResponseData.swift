@@ -100,7 +100,7 @@ struct User: Codable, Hashable {
 }
 
 //used for user data
-struct PartialUser: Codable, Hashable {
+struct PartialUser: Identifiable, Codable, Hashable {
     let id: Int
     let userName: String
     let profile: Profile

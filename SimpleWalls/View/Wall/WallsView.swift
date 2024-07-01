@@ -126,8 +126,8 @@ struct WallsView: View {
                     .navigationDestination(for: Int.self) { userId in
                         ProfileView(global, userId: userId, path: $path)
                     }
-                    .navigationDestination(for: Int.self) { _ in
-                        SearchPostView(path: $path)
+                    .navigationDestination(for: String.self) { _ in
+                        SearchPostView(global, path: $path)
                     }
                     .navigationDestination(for: Post.self) { post in
                         DetailPostView(global, postId: post.id, authorId: post.authorId, commentTapped: tapped, path: $path)

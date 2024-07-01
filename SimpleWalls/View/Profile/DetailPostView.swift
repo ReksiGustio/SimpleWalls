@@ -12,6 +12,7 @@ struct DetailPostView: View {
     @Binding var path: NavigationPath
     
     @State private var viewState = ViewState.downloading
+    @State private var sortComment = SortComment.top
     @State private var post = Post.example
     @State private var author = User.example
     @State private var selectedComment = -1
@@ -91,8 +92,21 @@ struct DetailPostView: View {
                         
                         Divider()
                         
-                        Text("Comments")
-                            .font(.title.bold())
+                        HStack {
+                            Text("Comments")
+                                .font(.title3.bold())
+                            
+                            Spacer()
+                            
+                            if comments.count > 0 {
+                                Picker(commentPicker, selection: $sortComment) {
+                                    Text("Latest Comments").tag(SortComment.new)
+                                    Text("Oldest Comments").tag(SortComment.old)
+                                    Text("Top Comments").tag(SortComment.top)
+                                }
+                                .tint(.primary)
+                            } // end if
+                        }
                         
                         ForEach(comments) { comment in
                             CommentView(global, comment: comment, path: $path)
@@ -176,6 +190,9 @@ struct DetailPostView: View {
 
 //function and computed properties here
 extension DetailPostView {
+    enum SortComment {
+        case new, old, top
+    }
     
     var profile: Profile {
         author.profile
@@ -186,7 +203,20 @@ extension DetailPostView {
     } // end of name property
     
     var comments: [Comment] {
-        post.comments ?? []
+        guard let comments = post.comments else { return [] }
+        switch sortComment {
+        case .new: return comments.sorted { $0.id > $1.id }
+        case .old: return comments.sorted { $0.id < $1.id }
+        case .top: return comments.sorted { $0.likes?.count ?? 0 > $1.likes?.count ?? 0 }
+        }
+    }
+    
+    var commentPicker: String {
+        switch sortComment {
+        case .new: "Latest Comments"
+        case .old: "Oldest Comments"
+        case .top: "Top Comments"
+        }
     }
     
     var postDate: String {

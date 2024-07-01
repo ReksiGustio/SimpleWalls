@@ -36,15 +36,13 @@ class Global: ObservableObject {
     }
     
     //used for store someone user image
-    @Published var userImage = Data()
-    @Published var wallsUserImage = Data()
-    @Published var notificationUserImage = Data()
-    @Published var menuUserImage = Data()
-    
-    //used for store someone user per tab menu
-    @Published var wallsUserData = User.example
-    @Published var notificationUserData = User.example
-    @Published var menuUserData = User.example
+    @Published var imagesData = [ImageData]() {
+        didSet {
+            if let encoded = try? JSONEncoder().encode(imagesData) {
+                UserDefaults.standard.setValue(encoded, forKey: "imagesData")
+            }
+        }
+    }
     
     //used for popup message
     @Published var message = ""
@@ -55,11 +53,18 @@ class Global: ObservableObject {
         if let data = UserDefaults.standard.data(forKey: "userData") {
             if let decoded = try? JSONDecoder().decode(User.self, from: data) {
                 userData = decoded
-                return
+            } else {
+                userData = .example
             }
         }
         
-        userData = .example
+        if let data = UserDefaults.standard.data(forKey: "imagesData") {
+            if let decoded = try? JSONDecoder().decode([ImageData].self, from: data) {
+                imagesData = decoded
+            } else {
+                imagesData = []
+            }
+        }
     }
     
     func getStatus() {
@@ -82,8 +87,15 @@ class Global: ObservableObject {
         }
     } // end of checkStatus
     
+    func loadImage(data: Data) -> Image? {
+        if let UIPicture = UIImage(data: data) {
+            return Image(uiImage: UIPicture)
+        }
+        
+        return nil
+    } // end of load user image
+    
     func logout() {
-        removeCookie()
         clearData()
         
         message = "Logout successfully"
@@ -118,16 +130,14 @@ class Global: ObservableObject {
     func clearData() {
         loginState = .logout
         userData = .example
-        
-        userImage = Data()
-        wallsUserImage = Data()
-        notificationUserImage = Data()
-        menuUserImage = Data()
-        
-        wallsUserData = User.example
-        notificationUserData = User.example
-        menuUserData = User.example
     } // end of clearData
+}
+
+struct ImageData: Codable {
+    let userId: Int?
+    let postId: Int?
+    let commentId: Int?
+    let data: Data
 }
 
 //view modifier
