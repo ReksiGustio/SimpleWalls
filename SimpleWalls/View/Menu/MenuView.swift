@@ -11,16 +11,14 @@ struct MenuView: View {
     @ObservedObject var global: Global
     @State private var path = NavigationPath()
     @State private var showLogoutPrompt = false
+    @State private var picture: Data?
     
     var body: some View {
         NavigationStack(path: $path) {
             Form {
                 Section {
                     HStack {
-                        
-                        Circle()
-                            .fill(.gray)
-                            .frame(width: 64, height: 64)
+                        ProfilePictureView(global: global, data: picture, imageURL: global.userData.profile.profilePicture, frameSize: 64)
                         
                         VStack(alignment: .leading) {
                             Text(name)

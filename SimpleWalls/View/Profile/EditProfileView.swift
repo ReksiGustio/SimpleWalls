@@ -11,22 +11,23 @@ import SwiftUI
 struct EditProfileView: View {
     let global: Global
     let profile: Profile
-    @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused
     @State private var displayName: String
     @State private var bio: String
     
     @State private var pickedItem: PhotosPickerItem?
-    @State private var picture: Data?
+    
     @State private var pictureURL: String?
     @State private var displayPicture: Image?
+    @State private var picture: Data?
     
     var body: some View {
         VStack(alignment: .leading) {
             Text("Profile Picture").font(.title3.bold())
             Divider()
             
-            VStack {
+            ZStack {
+                
                 PhotosPicker(selection: $pickedItem) {
                     if let displayPicture {
                         displayPicture
@@ -34,23 +35,14 @@ struct EditProfileView: View {
                             .scaledToFill()
                             .frame(width: 128, height: 128)
                             .clipShape(.circle)
-                    } else if let existingImage = global.loadImage(data: userImageData) {
-                        existingImage
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 128, height: 128)
-                            .clipShape(.circle)
-                            .onAppear { picture = userImageData }
                     } else {
-                        Circle()
-                            .fill(.secondary)
-                            .frame(width: 128, height: 128)
+                        ProfilePictureView(global: global, image: displayPicture, data: picture, imageURL: profile.profilePicture, frameSize: 128)
                     }
                 } // end of photopicker
                 .onChange(of: pickedItem) { _ in loadImage() }
                 .buttonStyle(PlainButtonStyle())
                 .padding()
-            }
+            } // end of vstack
             .frame(maxWidth: .infinity)
             .padding(.bottom, 20)
             
@@ -96,6 +88,7 @@ struct EditProfileView: View {
         
         _displayName = State(initialValue: profile.name ?? "")
         _bio = State(initialValue: profile.bio ?? "")
+        _picture = State(initialValue: UserDefaults.standard.data(forKey: "userId:\(global.userData.id)") ?? nil)
     }
 }
 
@@ -105,21 +98,6 @@ struct EditProfileView: View {
 
 //function and computed properties here
 extension EditProfileView {
-    var findIndex: Int {
-        if let index = global.imagesData.firstIndex(where: { $0.userId == global.userData.id }) {
-            return index
-        }
-        
-        return -1
-    }
-    
-    var userImageData: Data {
-        if let index = global.imagesData.firstIndex(where: { $0.userId == global.userData.id }) {
-            return global.imagesData[index].data
-        }
-        
-        return Data()
-    }
     
     func save() {
         isFocused = false
@@ -129,19 +107,24 @@ extension EditProfileView {
 
         Task {
             if picture != nil {
-                pictureURL = "http://localhost:3000/download/profile/\(global.userData.userName)-profile_pic.jpg"
-                //upload image
-                global.imagesData.append(ImageData(userId: global.userData.id, postId: nil, commentId: nil, data: picture ?? Data()))
+                pictureURL = "http://172.20.57.25:3000/download/profile/userId-\(global.userData.id)-profile_pic.jpg"
+                print("upload image")
+                await uploadRequest(image: picture ?? Data(), fieldName: "profile", id: "\(global.userData.id)")
+            } else {
+                pictureURL = nil
             }
+            print("update status")
             let response = await updateStatus(name: displayName, bio: bio, profilePicture: pictureURL)
             global.errorHandling(response: response)
             global.loadingState = .loaded
-            dismiss()
         }
+        UserDefaults.standard.setValue(picture, forKey: "userId:\(global.userData.id)")
         
     } // end of loginUser
     
     func loadImage() {
+        picture = nil
+        
         Task {
             guard let imageData = try await pickedItem?.loadTransferable(type: Data.self) else { return }
             guard let inputImage = UIImage(data: imageData) else { return }

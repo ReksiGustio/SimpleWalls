@@ -52,7 +52,7 @@ struct SearchPostView: View {
                         switch searchState {
                         case .user:
                             ForEach(users) { user in
-                                UserView(path: $path, user: user)
+                                UserView(global: global, path: $path, user: user)
                             }
                         case .post:
                             ForEach(posts) { post in

@@ -16,22 +16,22 @@ struct ProfileView: View {
     @State private var user = User.example
     @State private var selectedPost = -1
     @State private var deleteAlert = false
+    @State private var picture: Data?
     
     var body: some View {
         switch viewState {
         case .downloading:
             ProgressView()
                 .tint(.primary)
-                .onAppear { downloadUser(userId) }
+                .onAppear {
+                    downloadUser(userId)
+                    //download image
+                }
         case .downloaded:
             ScrollView {
                 LazyVStack {
-                    //image placeholder
                     VStack(alignment: .center) {
-                        Circle()
-                            .fill(.gray)
-                            .frame(width: 128, height: 128)
-                            .padding()
+                        ProfilePictureView(global: global, data: picture, imageURL: user.profile.profilePicture, frameSize: 128)
                         
                         Text(name)
                             .font(.title3.bold())
@@ -138,6 +138,7 @@ struct ProfileView: View {
         self.global = global
         self.userId = userId
         _path = path
+        _picture = State(initialValue: UserDefaults.standard.data(forKey: "userId:\(global.userData.id)") ?? nil)
     }
     
 }

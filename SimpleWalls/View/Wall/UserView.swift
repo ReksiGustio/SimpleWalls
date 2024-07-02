@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct UserView: View {
+    @ObservedObject var global: Global
     @Binding var path: NavigationPath
+    @State private var displayPicture: Image?
+    @State private var picture: Data?
     let user: PartialUser
     
     var body: some View {
         Button { path.append(user.id) } label: {
             HStack {
-                Circle()
-                    .fill(.gray)
-                    .frame(width: 44, height: 44)
-                    .padding(.trailing, 10)
+                ProfilePictureView(global: global, data: picture, imageURL: user.profile.profilePicture, frameSize: 44)
                 
                 Text(user.profile.name ?? "")
                     .font(.title3.weight(.semibold))
@@ -36,5 +36,5 @@ struct UserView: View {
 }
 
 #Preview {
-    UserView(path: .constant(NavigationPath()), user: .example)
+    UserView(global: Global(), path: .constant(NavigationPath()), user: .example)
 }

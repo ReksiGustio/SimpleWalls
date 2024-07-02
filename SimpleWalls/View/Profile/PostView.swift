@@ -11,6 +11,8 @@ struct PostView: View {
     @ObservedObject var global: Global
     @Binding var path: NavigationPath
     @State private var post: Post
+    @State private var displayPicture: Image?
+    @State private var picture: Data?
     let author: PartialUser
     
     var body: some View {
@@ -20,10 +22,7 @@ struct PostView: View {
                     ProfileView(global, userId: post.authorId, path: $path)
                 } label: {
                     HStack {
-                        //image placeholder
-                        Circle()
-                            .fill(.gray)
-                            .frame(width: 44, height: 44)
+                        ProfilePictureView(global: global, data: picture, imageURL: author.profile.profilePicture, frameSize: 44)
                         
                         VStack(alignment: .leading) {
                             Text(name)
@@ -122,6 +121,9 @@ struct PostView: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(post.published ? .primary : .secondary ,lineWidth: 1)
         )
+        .onAppear {
+            //download image
+        }
     } // end of body
     
     init(_ global: Global, post: Post, author: PartialUser, path: Binding<NavigationPath>) {
@@ -129,6 +131,7 @@ struct PostView: View {
         self.author = author
         _post = State(initialValue: post)
         _path = path
+        _picture = State(initialValue: UserDefaults.standard.data(forKey: "userId:\(author.id)") ?? nil)
     }
     
 }

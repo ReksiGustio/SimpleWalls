@@ -26,62 +26,85 @@ struct NewPostView: View {
     
     var body: some View {
         ZStack {
-            VStack(alignment: .leading) {
-                
-                Picker(isPublic ? "Public" : "Private", selection: $isPublic) {
-                    Text("Public").tag(true)
-                    Text("Private").tag(false)
-                }
-                .tint(.primary)
-                .padding(.horizontal, 8)
-                .overlay (
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(lineWidth: 1)
-                )
-                
-                
-                TextField("Write something here", text: $title, axis: .vertical)
-                    .focused($isFocused)
-                    .padding(.vertical, 20)
-                
-                Text(validationMessage)
-                    .foregroundStyle(.red)
-                    .padding(.vertical, 20)
-                
-                Button("Add Picture") {  }
-                    .buttonStyle(BorderedProminentButtonStyle())
-                
-                Spacer()
-                
-            } // end of vstack
-            .padding()
-            .navigationTitle("Create new post")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { validate() } label: {
-                        Label("Send", systemImage: "paperplane.fill")
+            ScrollView {
+                LazyVStack(alignment: .leading) {
+                    
+                    Picker(isPublic ? "Public" : "Private", selection: $isPublic) {
+                        Text("Public").tag(true)
+                        Text("Private").tag(false)
                     }
-                }
-                
-                ToolbarItem(placement: .keyboard) {
+                    .tint(.primary)
+                    .padding(.horizontal, 8)
+                    .overlay (
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(lineWidth: 1)
+                    )
+                    
+                    
+                    TextField("Write something here", text: $title, axis: .vertical)
+                        .focused($isFocused)
+                        .padding(.vertical, 20)
+                    
+                    Text(validationMessage)
+                        .foregroundStyle(.red)
+                        .padding(.vertical, 20)
+                    
+                    if let displayPicture {
+                        ZStack {
+                            Color.secondary
+                            
+                            displayPicture
+                                .resizable()
+                                .scaledToFill()
+                        }
+                        .frame(maxHeight: 400)
+                        .clipped()
+                    }
+                    
                     HStack {
-                        Spacer()
-                        Button("Done") { isFocused = false }
+                        PhotosPicker(selection: $pickedItem) {
+                            Text(displayPicture != nil ? "Change Picture" : "Add Picture")
+                        } // end of photopicker
+                        .onChange(of: pickedItem) { _ in loadImage() }
+                        
+                        if displayPicture != nil {
+                            Button("Remove") { displayPicture = nil }
+                        }
+                    }
+                    .buttonStyle(BorderedProminentButtonStyle())
+                    .padding(.vertical)
+                    
+                    Spacer()
+                    
+                } // end of vstack
+                .padding()
+                .navigationTitle("Create new post")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { validate() } label: {
+                            Label("Send", systemImage: "paperplane.fill")
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .keyboard) {
+                        HStack {
+                            Spacer()
+                            Button("Done") { isFocused = false }
+                        }
                     }
                 }
-            }
-            
-            if showProgress {
-                Color.primary
-                    .opacity(0.4)
-                    .ignoresSafeArea()
                 
-                ProgressView()
-                    .controlSize(.large)
-                    .tint(.white)
-            }
-            
+                if showProgress {
+                    Color.primary
+                        .opacity(0.4)
+                        .ignoresSafeArea()
+                    
+                    ProgressView()
+                        .controlSize(.large)
+                        .tint(.white)
+                }
+            } // end of scrollview
         } // end of zstack
         .disabled(showProgress)
     } // end of body
@@ -129,5 +152,24 @@ extension NewPostView {
             }
         }
     } // end of sendpost
+    
+    func loadImage() {
+        Task {
+            guard let imageData = try await pickedItem?.loadTransferable(type: Data.self) else { return }
+            guard let inputImage = UIImage(data: imageData) else { return }
+            
+            //load image to view
+            
+            //store image to binary data
+            if let thumbnail = inputImage.preparingThumbnail(of: CGSize(width: 256, height: 256)) {
+                picture = thumbnail.jpegData(compressionQuality: 1.0)
+                UserDefaults.standard.setValue(picture, forKey: "userId:\(global.userData.id)")
+
+                if let compressedUIImage = UIImage(data: picture ?? Data()) {
+                    displayPicture = Image(uiImage: compressedUIImage)
+                }
+            }
+        }
+    } // end of load image
     
 }

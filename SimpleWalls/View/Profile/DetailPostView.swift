@@ -17,6 +17,8 @@ struct DetailPostView: View {
     @State private var author = User.example
     @State private var selectedComment = -1
     @State private var deleteAlert = false
+    @State private var displayPicture: Image?
+    @State private var picture: Data?
     let postId: Int
     let authorId: Int
     let commentTapped: Bool
@@ -29,6 +31,7 @@ struct DetailPostView: View {
                 .onAppear { 
                     downloadUser(authorId)
                     downloadPost(postId)
+                    //download photo
                 }
         case .downloaded:
             VStack {
@@ -38,10 +41,7 @@ struct DetailPostView: View {
                             ProfileView(global, userId: post.authorId, path: $path)
                         } label: {
                             HStack {
-                                //image placeholder
-                                Circle()
-                                    .fill(.gray)
-                                    .frame(width: 44, height: 44)
+                                ProfilePictureView(global: global, image: displayPicture, data: picture, imageURL: author.profile.profilePicture, frameSize: 44)
                                 
                                 VStack(alignment: .leading) {
                                     Text(name)
@@ -180,6 +180,7 @@ struct DetailPostView: View {
         self.authorId = authorId
         self.commentTapped = commentTapped
         _path = path
+        _picture = State(initialValue: UserDefaults.standard.data(forKey: "userId:\(authorId)") ?? nil)
     }
     
 }

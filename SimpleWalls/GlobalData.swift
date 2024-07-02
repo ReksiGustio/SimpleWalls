@@ -35,15 +35,6 @@ class Global: ObservableObject {
         }
     }
     
-    //used for store someone user image
-    @Published var imagesData = [ImageData]() {
-        didSet {
-            if let encoded = try? JSONEncoder().encode(imagesData) {
-                UserDefaults.standard.setValue(encoded, forKey: "imagesData")
-            }
-        }
-    }
-    
     //used for popup message
     @Published var message = ""
     @Published var showMessage = false
@@ -55,14 +46,6 @@ class Global: ObservableObject {
                 userData = decoded
             } else {
                 userData = .example
-            }
-        }
-        
-        if let data = UserDefaults.standard.data(forKey: "imagesData") {
-            if let decoded = try? JSONDecoder().decode([ImageData].self, from: data) {
-                imagesData = decoded
-            } else {
-                imagesData = []
             }
         }
     }
@@ -131,13 +114,6 @@ class Global: ObservableObject {
         loginState = .logout
         userData = .example
     } // end of clearData
-}
-
-struct ImageData: Codable {
-    let userId: Int?
-    let postId: Int?
-    let commentId: Int?
-    let data: Data
 }
 
 //view modifier

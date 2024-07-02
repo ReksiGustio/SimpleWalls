@@ -13,6 +13,8 @@ struct CommentView: View {
     @State private var user = User.example
     @State private var comment: Comment
     @State private var viewState = ViewState.downloading
+    @State private var displayPicture: Image?
+    @State private var picture: Data?
     
     var body: some View {
         if viewState == .downloaded {
@@ -20,10 +22,7 @@ struct CommentView: View {
                 NavigationLink {
                     ProfileView(global, userId: comment.userId ?? 0, path: $path)
                 } label: {
-                    //image placeholder
-                    Circle()
-                        .fill(.gray)
-                        .frame(width: 44, height: 44)
+                    ProfilePictureView(global: global, data: picture, imageURL: user.profile.profilePicture, frameSize: 44)
                 } // end of navlink
                 .buttonStyle(PlainButtonStyle())
                 
@@ -81,6 +80,7 @@ struct CommentView: View {
         self.global = global
         self.comment = comment
         _path = path
+        _picture = State(initialValue: UserDefaults.standard.data(forKey: "userId:\(comment.userId ?? 0)") ?? nil)
     }
 }
 
