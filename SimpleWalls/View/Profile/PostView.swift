@@ -13,6 +13,7 @@ struct PostView: View {
     @State private var post: Post
     @State private var displayPicture: Image?
     @State private var picture: Data?
+    @State private var postPicture: Data?
     let author: PartialUser
     
     var body: some View {
@@ -57,13 +58,23 @@ struct PostView: View {
                 }
                 
             } // end of hstack
+            .padding([.horizontal, .top])
             
             Divider()
             
             VStack(alignment: .leading) {
                 Text(post.title ?? "")
                     .lineLimit(5)
-                    .padding(.vertical, 5)
+                    .padding(.top, 5)
+                    .padding([.horizontal, .bottom], 10)
+                
+                if post.imageURL != nil {
+                    PostPictureView(global: global, data: postPicture, imageURL: post.imageURL, postId: post.id)
+                        .overlay (
+                            Rectangle()
+                                .stroke(.secondary)
+                        )
+                }
                 
                 HStack {
                     if (post.likes?.count ?? 0) > 0 {
@@ -81,6 +92,7 @@ struct PostView: View {
                             .foregroundStyle(.secondary)
                     } // end if
                 } // end of hstack
+                .padding([.horizontal, .top], 10)
                 
             } // end of vstack
             .contentShape(Rectangle())
@@ -113,10 +125,9 @@ struct PostView: View {
                 .frame(maxWidth: .infinity)
                 .tint(.primary)
             }
-            .padding(.top, 5)
+            .padding()
             
         } // end of vstack
-        .padding()
         .overlay(
             RoundedRectangle(cornerRadius: 10)
                 .stroke(post.published ? .primary : .secondary ,lineWidth: 1)
@@ -132,6 +143,7 @@ struct PostView: View {
         _post = State(initialValue: post)
         _path = path
         _picture = State(initialValue: UserDefaults.standard.data(forKey: "userId:\(author.id)") ?? nil)
+        _postPicture = State(initialValue: UserDefaults.standard.data(forKey: "postId:\(post.id)") ?? nil)
     }
     
 }
@@ -172,7 +184,7 @@ extension PostView {
     func update(id: Int, published: Bool) {
         Task {
             print("update publish post")
-            let response = await updatePost(id: id, title: post.title, imageURL: post.imageURL, published: published)
+            let response = await updatePost(id: id, title: post.title, published: published)
             
             if let data = try? JSONDecoder().decode(ResponseData<Post>.self, from: response) {
                 post = data.data

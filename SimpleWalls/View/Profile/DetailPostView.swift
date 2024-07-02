@@ -19,6 +19,7 @@ struct DetailPostView: View {
     @State private var deleteAlert = false
     @State private var displayPicture: Image?
     @State private var picture: Data?
+    @State private var postPicture: Data?
     let postId: Int
     let authorId: Int
     let commentTapped: Bool
@@ -62,12 +63,27 @@ struct DetailPostView: View {
                             } // end of hstack
                             
                         } // end of navlink
+                        .padding(.horizontal)
                         .buttonStyle(PlainButtonStyle())
                         
-                        Divider()
+                        Divider().padding(.horizontal)
                         
                         Text(post.title ?? "")
                             .padding(.vertical, 5)
+                            .padding(.horizontal)
+                        
+                        VStack {
+                            if let postPicture {
+                                if let image = global.loadImage(data: postPicture) {
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(maxHeight: 400)
+                                        .clipped()
+                                        .contentShape(Rectangle())
+                                }
+                            }
+                        } // end of vstack
                         
                         if (post.likes?.count ?? 0) > 0 {
                             HStack {
@@ -75,10 +91,11 @@ struct DetailPostView: View {
                                 Image(systemName: "hand.thumbsup.circle.fill")
                                 Text("\(post.likes?.count ?? 0)")
                             } // end of hstack
+                            .padding(.horizontal)
                             .foregroundStyle(.blue)
                         } // end if
                         
-                        Divider()
+                        Divider().padding(.horizontal)
                         
                         Button {
                             if likedBySelf { unlike() }
@@ -89,12 +106,14 @@ struct DetailPostView: View {
                         .frame(maxWidth: .infinity)
                         .tint(likedBySelf ? .blue : .primary)
                         .padding(.top, 5)
+                        .padding(.horizontal)
                         
-                        Divider()
+                        Divider().padding(.horizontal)
                         
                         HStack {
                             Text("Comments")
                                 .font(.title3.bold())
+                                .padding(.horizontal)
                             
                             Spacer()
                             
@@ -105,6 +124,7 @@ struct DetailPostView: View {
                                     Text("Top Comments").tag(SortComment.top)
                                 }
                                 .tint(.primary)
+                                .padding(.horizontal)
                             } // end if
                         }
                         
@@ -130,6 +150,7 @@ struct DetailPostView: View {
                                 }
                                 .padding(.bottom, 10)
                         }
+                        .padding(.horizontal)
                         
                         //end post marker
                         if comments.count > 19 {
@@ -138,7 +159,7 @@ struct DetailPostView: View {
                         }
                         
                     } // end of vstack
-                    .padding()
+                    .padding(.vertical)
                     
                 } // end of scrollview
                 
@@ -181,6 +202,7 @@ struct DetailPostView: View {
         self.commentTapped = commentTapped
         _path = path
         _picture = State(initialValue: UserDefaults.standard.data(forKey: "userId:\(authorId)") ?? nil)
+        _postPicture = State(initialValue: UserDefaults.standard.data(forKey: "postId:\(postId)") ?? nil)
     }
     
 }

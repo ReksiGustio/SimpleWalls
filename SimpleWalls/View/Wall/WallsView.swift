@@ -72,6 +72,15 @@ struct WallsView: View {
                                                     Label("Delete post", systemImage: "trash")
                                                 }
                                                 
+                                                NavigationLink {
+                                                    EditPostView(global, post: post) { _ in
+                                                        posts = []
+                                                        viewState = .downloading
+                                                    }
+                                                } label: {
+                                                    Label("Edit post", systemImage: "pencil")
+                                                }
+                                                
                                             } // end if
                                             
                                             Button {
@@ -97,10 +106,6 @@ struct WallsView: View {
                         
                     } // end of vstack
                     .padding()
-                    .onDisappear {
-                        viewState = .downloading
-                        posts = []
-                    }
                     
                     HStack {
                         NavigationLink { 
@@ -183,9 +188,7 @@ extension WallsView {
                     }
                 }
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    viewState = .downloaded
-                }
+                viewState = .downloaded
             } else {
                 print("error handling")
                 viewState = .failed

@@ -87,6 +87,14 @@ struct ProfileView: View {
                                             Label("Delete post", systemImage: "trash")
                                         }
                                         
+                                        NavigationLink {
+                                            EditPostView(global, post: post) { _ in
+                                                viewState = .downloading   
+                                            }
+                                        } label: {
+                                            Label("Edit post", systemImage: "pencil")
+                                        }
+                                        
                                     } // end if
                                     
                                     Button {

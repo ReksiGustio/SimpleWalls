@@ -64,7 +64,6 @@ struct NewPostBody: Codable {
 //used for update publish post
 struct UpdatePostBody: Codable {
     let title: String?
-    let imageURL: String?
     let published: Bool
 }
 
@@ -122,7 +121,7 @@ struct Profile: Codable, Hashable {
 //used for user profile
 struct Post: Codable, Hashable, Identifiable {
     let id: Int
-    let title: String?
+    var title: String?
     let imageURL: String?
     let likes: [PostLike]?
     var comments: [Comment]?

@@ -1,28 +1,25 @@
 //
-//  NewPostView.swift
+//  EditPostView.swift
 //  SimpleWalls
 //
-//  Created by Reksi Gustio on 26/06/24.
+//  Created by Reksi Gustio on 02/07/24.
 //
 
-import PhotosUI
 import SwiftUI
 
-struct NewPostView: View {
+struct EditPostView: View {
     @ObservedObject var global: Global
     @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused
-    
-    @State private var title = ""
     @State private var validationMessage = ""
-    @State private var isPublic = true
     
-    @State private var pickedItem: PhotosPickerItem?
+    @State private var title: String
+    @State private var isPublic: Bool
     @State private var picture: Data?
-    @State private var displayPicture: Image?
-    @State private var pictureURL: String?
-    
     @State private var showProgress = false
+    
+    var post: Post
+    var displayPicture: Image?
     var sentPost: (Post) -> Void
     
     var body: some View {
@@ -63,24 +60,11 @@ struct NewPostView: View {
                         .contentShape(Rectangle())
                     }
                     
-                    HStack {
-                        PhotosPicker(selection: $pickedItem) {
-                            Text(displayPicture != nil ? "Change Picture" : "Add Picture")
-                        } // end of photopicker
-                        .onChange(of: pickedItem) { _ in loadImage() }
-                        
-                        if displayPicture != nil {
-                            Button("Remove") { displayPicture = nil }
-                        }
-                    }
-                    .buttonStyle(BorderedProminentButtonStyle())
-                    .padding(.vertical)
-                    
                     Spacer()
                     
                 } // end of vstack
                 .padding()
-                .navigationTitle("Create new post")
+                .navigationTitle("Edit post")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -111,20 +95,49 @@ struct NewPostView: View {
         .disabled(showProgress)
     } // end of body
     
-    init(_ global: Global, sentPost: @escaping (Post) -> Void) {
+    init(_ global: Global, post: Post, sentPost: @escaping (Post) -> Void) {
         self.global = global
+        self.post = post
         self.sentPost = sentPost
+        
+        _title = State(initialValue: post.title ?? "")
+        _isPublic = State(initialValue: post.published)
+        _picture = State(initialValue: UserDefaults.standard.data(forKey: "postId:\(post.id)") ?? nil)
+        
+        if let picture {
+            if let UIImage = UIImage(data: picture) {
+                displayPicture = Image(uiImage: UIImage)
+            }
+        }
+
     }
+    
+    func sendPost(title: String?, published: Bool) {
+        global.timer.upstream.connect().cancel()
+        
+        Task {
+            let response = await updatePost(id: post.id, title: title, published: published)
+            global.errorHandling(response: response)
+            if global.message.hasPrefix("Post") {
+                var post = post
+                post.title = title
+                sentPost(post)
+                dismiss()
+            }
+            showProgress = false
+            
+            //dismiss validation here
+        }
+    } // end of sendpost
     
 }
 
 #Preview {
-    NewPostView(Global()) { _ in }
+    EditPostView(Global(), post: .example) { _ in }
 }
 
 //function and computed properties here
-extension NewPostView {
-    
+extension EditPostView {
     func validate() {
         let text = title.trimmingCharacters(in: .whitespacesAndNewlines)
         if text.isEmpty && picture == nil {
@@ -135,53 +148,7 @@ extension NewPostView {
         isFocused = false
         showProgress = true
         validationMessage = ""
-        sendPost(title: title, published: isPublic, picture: picture)
+        sendPost(title: title, published: isPublic)
     }
-    
-    func sendPost(title: String?, published: Bool, picture: Data?) {
-        global.timer.upstream.connect().cancel()
-        let id = UUID().uuidString
-        
-        if picture != nil {
-            pictureURL = "http://172.20.57.25:3000/download/post/postId-\(id)-post_pic.jpg"
-            print("upload image")
-            Task {
-                await uploadRequest(image: picture ?? Data(), fieldName: "post", id: "\(id)")
-            }
-        } else {
-            pictureURL = nil
-        }
-        
-        Task {
-            let response = await uploadPost(title: title, published: published, imageURL: pictureURL)
-            global.errorHandling(response: response)
-            if global.message.hasPrefix("Posted") {
-                sentPost(Post(id: 99999, title: title, imageURL: pictureURL, likes: [], createdAt: "", updatedAt: "", published: isPublic, authorId: global.userData.id, author: PartialUser(id: global.userData.id, userName: global.userData.userName, profile: global.userData.profile)))
-                dismiss()
-            }
-            showProgress = false
-            
-            //dismiss validation here
-        }
-    } // end of sendpost
-    
-    func loadImage() {
-        Task {
-            guard let imageData = try await pickedItem?.loadTransferable(type: Data.self) else { return }
-            guard let inputImage = UIImage(data: imageData) else { return }
-            
-            //load image to view
-            
-            //store image to binary data
-            if let thumbnail = inputImage.preparingThumbnail(of: CGSize(width: 512, height: 512)) {
-                picture = thumbnail.jpegData(compressionQuality: 0.5)
-                UserDefaults.standard.setValue(picture, forKey: "userId:\(global.userData.id)")
-
-                if let compressedUIImage = UIImage(data: picture ?? Data()) {
-                    displayPicture = Image(uiImage: compressedUIImage)
-                }
-            }
-        }
-    } // end of load image
     
 }

@@ -85,8 +85,8 @@ func uploadPost(title: String?, published: Bool, imageURL: String?) async -> Dat
 }
 
 //update post
-func updatePost(id: Int, title: String?, imageURL: String?, published: Bool) async -> Data {
-    let userData = UpdatePostBody(title: title, imageURL: imageURL, published: published)
+func updatePost(id: Int, title: String?, published: Bool) async -> Data {
+    let userData = UpdatePostBody(title: title, published: published)
     guard let encoded = try? JSONEncoder().encode(userData) else { return Data() }
     
     let data = await putRequest(body: encoded, API: "/post/\(id)")

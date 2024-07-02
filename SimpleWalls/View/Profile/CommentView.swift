@@ -38,6 +38,31 @@ struct CommentView: View {
                     
                     Text(comment.text ?? "")
                     
+                    VStack {
+                        if comment.imageURL != nil {
+                            AsyncImage(url: URL(string: comment.imageURL ?? "")) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .clipShape(.rect(cornerRadius: 10))
+                                    .frame(maxWidth: 250, maxHeight: 150)
+                            } placeholder: {
+                                ZStack {
+                                    Color.clear
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(.primary)
+                                        )
+                                    
+                                    ProgressView()
+                                        .tint(.primary)
+                                }
+                                .frame(maxWidth: 250, maxHeight: 150)
+                            }
+                            
+                        }
+                    } // end of vstack
+                    
                     HStack {
                         Text(postDate)
                             .padding(.trailing, 5)

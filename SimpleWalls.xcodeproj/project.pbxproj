@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		830859292C34395E00724EDC /* EditPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830859282C34395E00724EDC /* EditPostView.swift */; };
 		831BB9F62C30FF0A00112266 /* WallsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831BB9F52C30FF0A00112266 /* WallsView.swift */; };
 		8335C8022C32FDC800E4A84B /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8335C8012C32FDC800E4A84B /* UserView.swift */; };
 		8336933B2C2E2FB100BB3D98 /* WriteCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8336933A2C2E2FB100BB3D98 /* WriteCommentView.swift */; };
@@ -32,9 +33,11 @@
 		83AAB76B2C2AD0180032D510 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AAB76A2C2AD0180032D510 /* EditProfileView.swift */; };
 		83B97D0F2C338AC2007B5375 /* ProfilePictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B97D0E2C338AC2007B5375 /* ProfilePictureView.swift */; };
 		83BDE61D2C2D899D00E8D57A /* DetailPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BDE61C2C2D899D00E8D57A /* DetailPostView.swift */; };
+		83C2D48F2C33E11C00F3AFF1 /* PostPictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C2D48E2C33E11C00F3AFF1 /* PostPictureView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		830859282C34395E00724EDC /* EditPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostView.swift; sourceTree = "<group>"; };
 		831BB9F52C30FF0A00112266 /* WallsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallsView.swift; sourceTree = "<group>"; };
 		8335C8012C32FDC800E4A84B /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
 		8336933A2C2E2FB100BB3D98 /* WriteCommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteCommentView.swift; sourceTree = "<group>"; };
@@ -61,6 +64,7 @@
 		83AAB76A2C2AD0180032D510 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		83B97D0E2C338AC2007B5375 /* ProfilePictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureView.swift; sourceTree = "<group>"; };
 		83BDE61C2C2D899D00E8D57A /* DetailPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPostView.swift; sourceTree = "<group>"; };
+		83C2D48E2C33E11C00F3AFF1 /* PostPictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostPictureView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,12 +156,14 @@
 			children = (
 				8384D30D2C29B40800E7BB61 /* ProfileView.swift */,
 				83AAB76A2C2AD0180032D510 /* EditProfileView.swift */,
+				83B97D0E2C338AC2007B5375 /* ProfilePictureView.swift */,
 				8384D30F2C29C17400E7BB61 /* PostView.swift */,
 				83BDE61C2C2D899D00E8D57A /* DetailPostView.swift */,
+				837995232C2BA1B30060315E /* NewPostView.swift */,
+				830859282C34395E00724EDC /* EditPostView.swift */,
+				83C2D48E2C33E11C00F3AFF1 /* PostPictureView.swift */,
 				83663F9C2C2EC522008AFC2D /* CommentView.swift */,
 				8336933A2C2E2FB100BB3D98 /* WriteCommentView.swift */,
-				837995232C2BA1B30060315E /* NewPostView.swift */,
-				83B97D0E2C338AC2007B5375 /* ProfilePictureView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -242,6 +248,7 @@
 			files = (
 				83663F9D2C2EC522008AFC2D /* CommentView.swift in Sources */,
 				83AAB76B2C2AD0180032D510 /* EditProfileView.swift in Sources */,
+				830859292C34395E00724EDC /* EditPostView.swift in Sources */,
 				836A0C9E2C32608B00F6C496 /* SearchPostView.swift in Sources */,
 				838361EA2C27147C00DBD994 /* LoginView.swift in Sources */,
 				838675C82C283CF6004AFFE1 /* PasswordView.swift in Sources */,
@@ -253,6 +260,7 @@
 				8384D30E2C29B40800E7BB61 /* ProfileView.swift in Sources */,
 				838361E22C26EA0500DBD994 /* ResponseData.swift in Sources */,
 				838361EE2C2718E000DBD994 /* GlobalData.swift in Sources */,
+				83C2D48F2C33E11C00F3AFF1 /* PostPictureView.swift in Sources */,
 				838675C62C2822E6004AFFE1 /* RegisterView.swift in Sources */,
 				831BB9F62C30FF0A00112266 /* WallsView.swift in Sources */,
 				8335C8022C32FDC800E4A84B /* UserView.swift in Sources */,
