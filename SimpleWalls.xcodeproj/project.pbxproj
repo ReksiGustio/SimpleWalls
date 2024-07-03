@@ -48,6 +48,7 @@
 		836A0C9D2C32608B00F6C496 /* SearchPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPostView.swift; sourceTree = "<group>"; };
 		837376C92C353070002259DE /* CustomThemeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomThemeView.swift; sourceTree = "<group>"; };
 		837995232C2BA1B30060315E /* NewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostView.swift; sourceTree = "<group>"; };
+		837ED0E62C3583C2004A60BC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		838361CE2C26E7EB00DBD994 /* SimpleWalls.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleWalls.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		838361D12C26E7EB00DBD994 /* SimpleWallsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWallsApp.swift; sourceTree = "<group>"; };
 		838361D32C26E7EB00DBD994 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -95,6 +96,7 @@
 		838361C52C26E7EB00DBD994 = {
 			isa = PBXGroup;
 			children = (
+				837ED0E62C3583C2004A60BC /* README.md */,
 				838361D02C26E7EB00DBD994 /* SimpleWalls */,
 				838361CF2C26E7EB00DBD994 /* Products */,
 			);
