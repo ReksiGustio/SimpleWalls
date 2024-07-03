@@ -54,9 +54,14 @@ struct NewPostView: View {
                         ZStack {
                             Color.secondary
                             
-                            displayPicture
-                                .resizable()
-                                .scaledToFill()
+                            Button {
+                                global.imageData = picture ?? Data()
+                                global.showImage = true
+                            } label: {
+                                displayPicture
+                                    .resizable()
+                                    .scaledToFill()
+                            }
                         }
                         .frame(maxHeight: 400)
                         .clipped()

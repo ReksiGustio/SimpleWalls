@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @Environment(\.colorScheme) var colorScheme
     @ObservedObject var global: Global
     @Binding var path: NavigationPath
     let userId: Int
@@ -29,9 +30,14 @@ struct ProfileView: View {
                 }
         case .downloaded:
             ScrollView {
-                LazyVStack {
+                VStack {
                     VStack(alignment: .center) {
-                        ProfilePictureView(global: global, data: picture, imageURL: user.profile.profilePicture, frameSize: 128)
+                        Button {
+                            global.imageData = picture ?? Data()
+                            global.showImage = true
+                        } label: {
+                            ProfilePictureView(global: global, data: picture, imageURL: user.profile.profilePicture, frameSize: 128)
+                        }
                         
                         Text(name)
                             .font(.title3.bold())
@@ -58,63 +64,72 @@ struct ProfileView: View {
                         .font(.title3.bold())
                         .padding()
                     
-                    Group {
-                        if userId == global.userData.id {
-                            NavigationLink { 
-                                NewPostView(global) { post in
-                                    user.posts?.insert(post, at: 0)
-                                }
-                            } label: {
-                                Text("Write new post")
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .overlay (
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(lineWidth: 1)
-                                    )
-                                    .tint(.primary)
-                            } // end of navlink
-                        } // end if
+                    ZStack {
+                        Rectangle()
+                            .fill(displayColor)
                         
-                        ForEach(posts) { post in
-                            PostView(global, post: post, author: partialUser, path: $path)
-                                .contextMenu {
-                                    if userId == global.userData.id {
-                                        Button(role: .destructive) {
-                                            selectedPost = post.id
-                                            deleteAlert = true
-                                        } label: {
-                                            Label("Delete post", systemImage: "trash")
+                        LazyVStack {
+                            Group {
+                                if userId == global.userData.id {
+                                    NavigationLink {
+                                        NewPostView(global) { post in
+                                            user.posts?.insert(post, at: 0)
                                         }
-                                        
-                                        NavigationLink {
-                                            EditPostView(global, post: post) { _ in
-                                                viewState = .downloading   
-                                            }
-                                        } label: {
-                                            Label("Edit post", systemImage: "pencil")
-                                        }
-                                        
-                                    } // end if
-                                    
-                                    Button {
-                                        UIPasteboard.general.string = post.title
                                     } label: {
-                                        Label("Copy text to clipboard", systemImage: "doc.on.doc")
-                                    }
-                                    
-                                }
-                        } // end of foreach
-                    
-                        
-                    } // end of group
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 10)
-                    
-                    //end post marker
-                    Color.primary
-                        .frame(height: 1)
-                    
+                                        Text("Write new post")
+                                            .padding()
+                                            .frame(maxWidth: .infinity)
+                                            .background(Color(uiColor: .systemBackground))
+                                            .clipShape(.rect(cornerRadius: 10))
+                                            .overlay (
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(lineWidth: 1)
+                                            )
+                                            .tint(.primary)
+                                    } // end of navlink
+                                    .padding(.top, 10)
+                                } // end if
+                                
+                                ForEach(posts) { post in
+                                    PostView(global, post: post, author: partialUser, path: $path)
+                                        .contextMenu {
+                                            if userId == global.userData.id {
+                                                Button(role: .destructive) {
+                                                    selectedPost = post.id
+                                                    deleteAlert = true
+                                                } label: {
+                                                    Label("Delete post", systemImage: "trash")
+                                                }
+                                                
+                                                NavigationLink {
+                                                    EditPostView(global, post: post) { _ in
+                                                        viewState = .downloading
+                                                    }
+                                                } label: {
+                                                    Label("Edit post", systemImage: "pencil")
+                                                }
+                                                
+                                            } // end if
+                                            
+                                            Button {
+                                                UIPasteboard.general.string = post.title
+                                            } label: {
+                                                Label("Copy text to clipboard", systemImage: "doc.on.doc")
+                                            }
+                                            
+                                        }
+                                } // end of foreach
+                                
+                                
+                            } // end of group
+                            .padding(.horizontal, 20)
+                            .padding(.bottom, 10)
+                            
+                            //end post marker
+                            Color.primary
+                                .frame(height: 1)
+                        } // end of lazyvstack
+                    } // end of zstack
                 } // end of vstack
             } // end of Scrollview
             .navigationTitle(name)
@@ -176,6 +191,18 @@ extension ProfileView {
     
     var partialUser: PartialUser {
         return PartialUser(id: user.id, userName: user.userName, profile: user.profile)
+    }
+    
+    var displayColor: Color {
+        if colorScheme == .light {
+            Color(red: global.customBackground["light"]?.red ?? 0.9,
+                  green: global.customBackground["light"]?.green ?? 0.9,
+                  blue: global.customBackground["light"]?.blue ?? 0.9)
+        } else {
+            Color(red: global.customBackground["dark"]?.red ?? 0.1,
+                  green: global.customBackground["dark"]?.green ?? 0.1,
+                  blue: global.customBackground["dark"]?.blue ?? 0.1)
+        }
     }
     
     func downloadUser(_ id: Int) {

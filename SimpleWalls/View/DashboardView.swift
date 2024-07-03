@@ -24,6 +24,12 @@ struct DashboardView: View {
                 }
             
         } // end of tabview
+        .sheet(isPresented: $global.showImage) {
+            if !global.imageData.isEmpty {
+                PictureView(global: global, data: global.imageData)
+                    .onDisappear { global.imageData = Data() }
+            }
+        }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 global.getStatus()
             }

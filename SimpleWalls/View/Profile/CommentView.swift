@@ -40,24 +40,21 @@ struct CommentView: View {
                     
                     VStack {
                         if comment.imageURL != nil {
-                            AsyncImage(url: URL(string: comment.imageURL ?? "")) { image in
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .clipShape(.rect(cornerRadius: 10))
-                                    .frame(maxWidth: 250, maxHeight: 150)
-                            } placeholder: {
-                                ZStack {
-                                    Color.clear
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .stroke(.primary)
-                                        )
-                                    
-                                    ProgressView()
-                                        .tint(.primary)
+                            if let displayPicture {
+                                Button {
+                                    global.imageData = picture ?? Data()
+                                    global.showImage = true
+                                } label: {
+                                    displayPicture
+                                        .resizable()
+                                        .scaledToFit()
+                                        .clipShape(.rect(cornerRadius: 10))
+                                        .frame(maxWidth: 250, maxHeight: 150)
                                 }
-                                .frame(maxWidth: 250, maxHeight: 150)
+                            } else {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(.secondary)
+                                    .frame(maxWidth: 250, maxHeight: 150)
                             }
                             
                         }
@@ -148,12 +145,27 @@ extension CommentView {
             //get data success
             if let data = try? JSONDecoder().decode(ResponseData<User>.self, from: response) {
                 user = data.data
+                if comment.imageURL != nil {
+                    displayPicture = await downloadImage()
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     viewState = .downloaded
                 }
             }
         }
     }// end of downloaduser
+    
+    func downloadImage() async -> Image? {
+        let response = await downloadRequest(imageURL: comment.imageURL)
+
+        if response.isEmpty {
+            return nil
+        } else {
+            picture = response
+            return Image(uiImage: UIImage(data: response) ?? UIImage())
+        }
+        
+    } // end of download image
     
     func like() {
         Task {

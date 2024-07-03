@@ -95,7 +95,7 @@ struct User: Codable, Hashable {
     let profile: Profile
     var posts: [Post]?
     
-    static let example = User(id: 1, userName: "", profile: .example, posts: [.example])
+    static let example = User(id: 99999, userName: "", profile: .example, posts: [.example])
 }
 
 //used for user data
@@ -104,7 +104,7 @@ struct PartialUser: Identifiable, Codable, Hashable {
     let userName: String
     let profile: Profile
     
-    static let example = PartialUser(id: 1, userName: "", profile: .example)
+    static let example = PartialUser(id: 99999, userName: "", profile: .example)
 }
 
 //used for user profile
@@ -115,7 +115,7 @@ struct Profile: Codable, Hashable {
     let profilePicture: String?
     let userId: Int
     
-    static let example = Profile(id: 1, name: "", bio: "", profilePicture: nil, userId: 1)
+    static let example = Profile(id: 99999, name: "", bio: "", profilePicture: nil, userId: 1)
 }
 
 //used for user profile
@@ -131,7 +131,7 @@ struct Post: Codable, Hashable, Identifiable {
     let authorId: Int
     let author: PartialUser?
     
-    static let example = Post(id: 1, title: "", imageURL: nil, likes: [PostLike(displayName: "", postId: 1, userId: 3)], comments: [.example], createdAt: "", updatedAt: "", published: true, authorId: 1, author: nil)
+    static let example = Post(id: 99999, title: "", imageURL: nil, likes: [PostLike(displayName: "", postId: 1, userId: 3)], comments: [.example], createdAt: "", updatedAt: "", published: true, authorId: 1, author: nil)
 }
 
 //used for post like data
@@ -152,7 +152,7 @@ struct Comment: Codable, Hashable, Identifiable {
     let userId: Int?
     let postId: Int?
     
-    static let example = Comment(id: 1, text: "", imageURL: nil, likes: [], createdAt: "", updatedAt: "", userId: 1, postId: 1)
+    static let example = Comment(id: 99999, text: "", imageURL: nil, likes: [], createdAt: "", updatedAt: "", userId: 1, postId: 1)
 }
 //used for comment like
 struct CommentLike: Codable, Hashable {

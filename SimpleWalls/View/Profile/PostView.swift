@@ -128,13 +128,12 @@ struct PostView: View {
             .padding()
             
         } // end of vstack
+        .background(Color(uiColor: .systemBackground))
+        .clipShape(.rect(cornerRadius: 10))
         .overlay(
             RoundedRectangle(cornerRadius: 10)
                 .stroke(post.published ? .primary : .secondary ,lineWidth: 1)
         )
-        .onAppear {
-            //download image
-        }
     } // end of body
     
     init(_ global: Global, post: Post, author: PartialUser, path: Binding<NavigationPath>) {

@@ -37,7 +37,7 @@ struct DetailPostView: View {
         case .downloaded:
             VStack {
                 ScrollView {
-                    LazyVStack(alignment: .leading) {
+                    VStack(alignment: .leading) {
                         NavigationLink {
                             ProfileView(global, userId: post.authorId, path: $path)
                         } label: {
@@ -75,12 +75,17 @@ struct DetailPostView: View {
                         VStack {
                             if let postPicture {
                                 if let image = global.loadImage(data: postPicture) {
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(maxHeight: 400)
-                                        .clipped()
-                                        .contentShape(Rectangle())
+                                    Button {
+                                        global.imageData = postPicture
+                                        global.showImage = true
+                                    } label: {
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(maxHeight: 400)
+                                            .clipped()
+                                            .contentShape(Rectangle())
+                                    }
                                 }
                             }
                         } // end of vstack

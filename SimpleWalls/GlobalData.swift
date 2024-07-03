@@ -25,6 +25,19 @@ class Global: ObservableObject {
     @Published var loginState = LoginState.opening
     @Published var loadingState = LoadingState.loaded
     @Published var commentTapped = false
+    @Published var showImage = false
+    @Published var imageData = Data()
+    
+    //used for custombackground
+    @Published var customBackground = 
+    ["light": CustomBackground(r: 0.9, g: 0.9, b: 0.9),
+     "dark": CustomBackground(r: 0.1, g: 0.1, b: 0.1)] {
+        didSet {
+            if let encoded = try? JSONEncoder().encode(customBackground) {
+                UserDefaults.standard.setValue(encoded, forKey: "customBackground")
+            }
+        }
+    }
     
     //used for store current user data
     @Published var userData: User = .example {
@@ -46,6 +59,15 @@ class Global: ObservableObject {
                 userData = decoded
             } else {
                 userData = .example
+            }
+        }
+        
+        if let data = UserDefaults.standard.data(forKey: "customBackground") {
+            if let decoded = try? JSONDecoder().decode([String: CustomBackground].self, from: data) {
+                customBackground = decoded
+            } else {
+                customBackground = ["light": CustomBackground(r: 0.9, g: 0.9, b: 0.9),
+                                    "dark": CustomBackground(r: 0.1, g: 0.1, b: 0.1)]
             }
         }
     }
@@ -114,6 +136,37 @@ class Global: ObservableObject {
         loginState = .logout
         userData = .example
     } // end of clearData
+}
+
+//class for custom background color
+struct CustomBackground: Codable {
+    var red: Double
+    var green: Double
+    var blue: Double
+    
+    init(r: Double, g: Double, b: Double) {
+        red = r
+        green = g
+        blue = b
+    }
+}
+
+//class to save image to gallery
+class ImageSaver: NSObject {
+    var successHandler: (() -> Void)?
+    var errorHandler: ((Error) -> Void)?
+    
+    func writeToPhotoAlbum(image: UIImage) {
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompleted), nil)
+    }
+    
+    @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            errorHandler?(error)
+        } else {
+            successHandler?()
+        }
+    }
 }
 
 //view modifier

@@ -31,6 +31,7 @@ struct MenuView: View {
                 } // end of section
                 
                 Section("Settings") {
+                    NavigationLink("Customize theme") { CustomThemeView(global) }
                     Button("Log out") { showLogoutPrompt = true }
                         .foregroundStyle(.red)
                 }

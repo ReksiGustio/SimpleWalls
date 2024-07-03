@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WallsView: View {
+    @Environment(\.colorScheme) var colorScheme
     @ObservedObject var global: Global
     @State private var path = NavigationPath()
     @State private var viewState = ViewState.downloading
@@ -30,69 +31,84 @@ struct WallsView: View {
                     VStack {
                         
                         ScrollView {
-                            LazyVStack {
-                                
-                                HStack {
-                                    Button {
-                                        path.append(global.userData.id)
-                                    } label: {
-                                        Text(global.userData.profile.name ?? "")
-                                            .lineLimit(1)
-                                            .font(.title3.bold())
-                                            .frame(maxWidth: .infinity)
-                                            .modifier(CustomButton(paddingSize: 7))
-                                    }
+                            VStack {
+                                ZStack {
+                                    Rectangle()
+                                        .fill(displayColor)
                                     
-                                    Button {
-                                        path.append("Search")
-                                    } label: {
-                                        Image(systemName: "magnifyingglass")
-                                    }
-                                    .modifier(CustomButton(paddingSize: 10))
-                                    
-                                    Button {
-                                        posts = []
-                                        viewState = .downloading
-                                    } label: {
-                                        Image(systemName: "arrow.circlepath")
-                                    }
-                                    .modifier(CustomButton(paddingSize: 10))
-                                }
-                                .id("topView")
-                                .padding(.vertical, 5)
-                                
-                                ForEach(posts) { post in
-                                    PostView(global, post: post, author: post.author ?? .example, path: $path)
-                                        .contextMenu {
-                                            if post.author?.id == global.userData.id {
-                                                Button(role: .destructive) {
-                                                    selectedPost = post.id
-                                                    deleteAlert = true
-                                                } label: {
-                                                    Label("Delete post", systemImage: "trash")
-                                                }
-                                                
-                                                NavigationLink {
-                                                    EditPostView(global, post: post) { _ in
-                                                        posts = []
-                                                        viewState = .downloading
-                                                    }
-                                                } label: {
-                                                    Label("Edit post", systemImage: "pencil")
-                                                }
-                                                
-                                            } // end if
-                                            
+                                    LazyVStack {
+                                        
+                                        HStack {
                                             Button {
-                                                UIPasteboard.general.string = post.title
+                                                path.append(global.userData.id)
                                             } label: {
-                                                Label("Copy text to clipboard", systemImage: "doc.on.doc")
+                                                Text(global.userData.profile.name ?? "")
+                                                    .lineLimit(1)
+                                                    .font(.title3.bold())
+                                                    .frame(maxWidth: .infinity)
+                                                    .modifier(CustomButton(paddingSize: 7))
+                                                    .background(Color(uiColor: .systemBackground))
+                                                    .clipShape(.rect(cornerRadius: 7))
                                             }
                                             
+                                            Button {
+                                                path.append("Search")
+                                            } label: {
+                                                Image(systemName: "magnifyingglass")
+                                            }
+                                            .modifier(CustomButton(paddingSize: 10))
+                                            .background(Color(uiColor: .systemBackground))
+                                            .clipShape(.rect(cornerRadius: 10))
+                                            
+                                            Button {
+                                                posts = []
+                                                viewState = .downloading
+                                            } label: {
+                                                Image(systemName: "arrow.circlepath")
+                                            }
+                                            .modifier(CustomButton(paddingSize: 10))
+                                            .background(Color(uiColor: .systemBackground))
+                                            .clipShape(.rect(cornerRadius: 10))
                                         }
-                                        .padding(.bottom, 10)
-                                } // end of foreach
-                            } // end of lazyvstack
+                                        .id("topView")
+                                        .padding(.vertical, 10)
+                                        
+                                        ForEach(posts) { post in
+                                            PostView(global, post: post, author: post.author ?? .example, path: $path)
+                                                .contextMenu {
+                                                    if post.author?.id == global.userData.id {
+                                                        Button(role: .destructive) {
+                                                            selectedPost = post.id
+                                                            deleteAlert = true
+                                                        } label: {
+                                                            Label("Delete post", systemImage: "trash")
+                                                        }
+                                                        
+                                                        NavigationLink {
+                                                            EditPostView(global, post: post) { _ in
+                                                                posts = []
+                                                                viewState = .downloading
+                                                            }
+                                                        } label: {
+                                                            Label("Edit post", systemImage: "pencil")
+                                                        }
+                                                        
+                                                    } // end if
+                                                    
+                                                    Button {
+                                                        UIPasteboard.general.string = post.title
+                                                    } label: {
+                                                        Label("Copy text to clipboard", systemImage: "doc.on.doc")
+                                                    }
+                                                    
+                                                }
+                                                .padding(.bottom, 10)
+                                        } // end of foreach
+                                    } // end of lazyvstack
+                                    .padding(.horizontal)
+                                    
+                                } // end of zstack
+                            } // end of vstack
                             
                             //end post marker
                             if posts.count > 19 {
@@ -105,7 +121,6 @@ struct WallsView: View {
                         .scrollIndicators(.hidden)
                         
                     } // end of vstack
-                    .padding()
                     
                     HStack {
                         NavigationLink { 
@@ -171,6 +186,18 @@ struct WallsView: View {
 extension WallsView {
     
     var tapped: Bool { global.commentTapped }
+    
+    var displayColor: Color {
+        if colorScheme == .light {
+            Color(red: global.customBackground["light"]?.red ?? 0.9,
+                  green: global.customBackground["light"]?.green ?? 0.9,
+                  blue: global.customBackground["light"]?.blue ?? 0.9)
+        } else {
+            Color(red: global.customBackground["dark"]?.red ?? 0.1,
+                  green: global.customBackground["dark"]?.green ?? 0.1,
+                  blue: global.customBackground["dark"]?.blue ?? 0.1)
+        }
+    }
     
     func downloadPosts() {
         print("downloading posts")

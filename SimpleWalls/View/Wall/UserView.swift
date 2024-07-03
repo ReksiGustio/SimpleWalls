@@ -25,6 +25,8 @@ struct UserView: View {
                 Spacer()
             }
             .padding()
+            .background(Color(uiColor: .systemBackground))
+            .clipShape(.rect(cornerRadius: 10))
             .overlay (
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(.primary)

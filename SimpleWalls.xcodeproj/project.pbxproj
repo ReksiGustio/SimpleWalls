@@ -14,6 +14,7 @@
 		8351E64E2C33B11000ECE766 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8351E64D2C33B10F00ECE766 /* Requests.swift */; };
 		83663F9D2C2EC522008AFC2D /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83663F9C2C2EC522008AFC2D /* CommentView.swift */; };
 		836A0C9E2C32608B00F6C496 /* SearchPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836A0C9D2C32608B00F6C496 /* SearchPostView.swift */; };
+		837376CA2C353070002259DE /* CustomThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 837376C92C353070002259DE /* CustomThemeView.swift */; };
 		837995242C2BA1B30060315E /* NewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 837995232C2BA1B30060315E /* NewPostView.swift */; };
 		838361D22C26E7EB00DBD994 /* SimpleWallsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838361D12C26E7EB00DBD994 /* SimpleWallsApp.swift */; };
 		838361D42C26E7EB00DBD994 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838361D32C26E7EB00DBD994 /* ContentView.swift */; };
@@ -34,6 +35,7 @@
 		83B97D0F2C338AC2007B5375 /* ProfilePictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B97D0E2C338AC2007B5375 /* ProfilePictureView.swift */; };
 		83BDE61D2C2D899D00E8D57A /* DetailPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BDE61C2C2D899D00E8D57A /* DetailPostView.swift */; };
 		83C2D48F2C33E11C00F3AFF1 /* PostPictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C2D48E2C33E11C00F3AFF1 /* PostPictureView.swift */; };
+		83E7A7F82C34DB2C0074B0C2 /* PictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E7A7F72C34DB2C0074B0C2 /* PictureView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +46,7 @@
 		8351E64D2C33B10F00ECE766 /* Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requests.swift; sourceTree = "<group>"; };
 		83663F9C2C2EC522008AFC2D /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
 		836A0C9D2C32608B00F6C496 /* SearchPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPostView.swift; sourceTree = "<group>"; };
+		837376C92C353070002259DE /* CustomThemeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomThemeView.swift; sourceTree = "<group>"; };
 		837995232C2BA1B30060315E /* NewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostView.swift; sourceTree = "<group>"; };
 		838361CE2C26E7EB00DBD994 /* SimpleWalls.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleWalls.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		838361D12C26E7EB00DBD994 /* SimpleWallsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWallsApp.swift; sourceTree = "<group>"; };
@@ -65,6 +68,7 @@
 		83B97D0E2C338AC2007B5375 /* ProfilePictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureView.swift; sourceTree = "<group>"; };
 		83BDE61C2C2D899D00E8D57A /* DetailPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPostView.swift; sourceTree = "<group>"; };
 		83C2D48E2C33E11C00F3AFF1 /* PostPictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostPictureView.swift; sourceTree = "<group>"; };
+		83E7A7F72C34DB2C0074B0C2 /* PictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +168,7 @@
 				83C2D48E2C33E11C00F3AFF1 /* PostPictureView.swift */,
 				83663F9C2C2EC522008AFC2D /* CommentView.swift */,
 				8336933A2C2E2FB100BB3D98 /* WriteCommentView.swift */,
+				83E7A7F72C34DB2C0074B0C2 /* PictureView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -172,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				8384D30A2C29B2FB00E7BB61 /* MenuView.swift */,
+				837376C92C353070002259DE /* CustomThemeView.swift */,
 			);
 			path = Menu;
 			sourceTree = "<group>";
@@ -249,6 +255,7 @@
 				83663F9D2C2EC522008AFC2D /* CommentView.swift in Sources */,
 				83AAB76B2C2AD0180032D510 /* EditProfileView.swift in Sources */,
 				830859292C34395E00724EDC /* EditPostView.swift in Sources */,
+				83E7A7F82C34DB2C0074B0C2 /* PictureView.swift in Sources */,
 				836A0C9E2C32608B00F6C496 /* SearchPostView.swift in Sources */,
 				838361EA2C27147C00DBD994 /* LoginView.swift in Sources */,
 				838675C82C283CF6004AFFE1 /* PasswordView.swift in Sources */,
@@ -271,6 +278,7 @@
 				838361E62C270A1300DBD994 /* PopupView.swift in Sources */,
 				8384D3102C29C17400E7BB61 /* PostView.swift in Sources */,
 				838361D22C26E7EB00DBD994 /* SimpleWallsApp.swift in Sources */,
+				837376CA2C353070002259DE /* CustomThemeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,6 +415,7 @@
 				DEVELOPMENT_TEAM = A392843C4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save image to your albums.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -437,6 +446,7 @@
 				DEVELOPMENT_TEAM = A392843C4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save image to your albums.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
