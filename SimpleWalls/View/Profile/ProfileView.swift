@@ -39,11 +39,46 @@ struct ProfileView: View {
                             ProfilePictureView(global: global, data: picture, imageURL: user.profile.profilePicture, frameSize: 128)
                         }
                         
+                        if userId != global.userData.id {
+                            Button(isFollowed ? "Unfollow" : "Follow") {
+                                isFollowed ? unfollow() : follow()
+                            }
+                            .buttonStyle(BorderedProminentButtonStyle())
+                        } // end if
+                        
                         Text(name)
                             .font(.title3.bold())
                         
                         Text(bio)
                             .lineLimit(4)
+                        
+                        HStack {
+                            Button { 
+                                if user.following.count > 0 {
+                                    path.append(user.following)
+                                }
+                            } label: {
+                                VStack {
+                                    Text("Following").font(.headline)
+                                    Text("\(user.following.count)").font(.title3.bold())
+                                }
+                            }
+                            .padding(.horizontal)
+                            
+                            Button { 
+                                if user.follower.count > 0 {
+                                    path.append(user.follower)
+                                }
+                            } label: {
+                                VStack {
+                                    Text("Follower").font(.headline)
+                                    Text("\(user.follower.count)").font(.title3.bold())
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .padding(.vertical, 5)
                     } // end of vstack
                     
                     Divider()
@@ -69,6 +104,9 @@ struct ProfileView: View {
                             .fill(displayColor)
                         
                         LazyVStack {
+                            Rectangle()
+                                .fill(.clear)
+                                .padding(.top, 5)
                             Group {
                                 if userId == global.userData.id {
                                     NavigationLink {
@@ -205,6 +243,16 @@ extension ProfileView {
         }
     }
     
+    var isFollowed: Bool {
+        guard let index = global.userData.following.firstIndex(where: { $0.id == user.id }) else { return false }
+        
+        if user.id == global.userData.following[index].id {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     func downloadUser(_ id: Int) {
         viewState = .downloading
         global.timer.upstream.connect().cancel()
@@ -243,4 +291,40 @@ extension ProfileView {
         }
     } // end of removepost
     
+    func follow() {
+        global.message = ""
+        global.timer.upstream.connect().cancel()
+        
+        Task {
+            let response = await followUser(id: user.id, displayName: name, imageURL: profile.profilePicture)
+            
+            //get data success
+            if let data = try? JSONDecoder().decode(ResponseData<Follow>.self, from: response) {
+                let profile = global.userData.profile
+                global.userData.following.append(data.data)
+                user.follower.append(Follow(id: global.userData.id, displayName: profile.name, imageURL: profile.profilePicture, userId: user.id))
+            } else {
+                print("error handling")
+                global.errorHandling(response: response)
+                viewState = .failed
+            }
+        }
+    } // end of follow
+    
+    func unfollow() {
+        global.message = ""
+        global.timer.upstream.connect().cancel()
+        
+        Task {
+            let response = await unfollowUser(userId: user.id)
+            
+            //get data success
+            global.errorHandling(response: response)
+            if global.message.hasPrefix("Unfollow") {
+                global.showMessage = false
+                global.userData.following.removeAll(where: { $0.id == user.id })
+                user.follower.removeAll(where: { $0.id == global.userData.id })
+            }
+        }
+    } // end of removepost
 }

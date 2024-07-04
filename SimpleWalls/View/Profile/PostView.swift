@@ -68,7 +68,15 @@ struct PostView: View {
                     .padding(.top, 5)
                     .padding([.horizontal, .bottom], 10)
                 
-                if post.imageURL != nil {
+                if isSharingPost {
+                    if let postId = post.imageURL {
+                        SharedPostView(global, post: .example, author: .example, path: .constant(NavigationPath()), postId: Int(postId))
+                            .disabled(true)
+                            .padding(.horizontal)
+                    }
+                }
+                
+                if post.imageURL != nil && !isSharingPost {
                     PostPictureView(global: global, data: postPicture, imageURL: post.imageURL, postId: post.id)
                         .overlay (
                             Rectangle()
@@ -124,8 +132,19 @@ struct PostView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .tint(.primary)
+                
+                Divider()
+                .frame(height: 20)
+                
+                NavigationLink {
+                    NewPostView(global, sharedPost: post) { _ in }
+                } label: {
+                    Label("Share", systemImage: "arrowshape.turn.up.right.fill")
+                }
+                .frame(maxWidth: .infinity)
+                .tint(.primary)
             }
-            .padding()
+            .padding(.vertical)
             
         } // end of vstack
         .background(Color(uiColor: .systemBackground))
@@ -178,6 +197,15 @@ extension PostView {
     
     var likedBySelf: Bool {
         return post.likes?.contains(where: { $0.userId == global.userData.id }) ?? false
+    }
+    
+    var isSharingPost: Bool {
+        guard let pictureURL = post.imageURL else { return false }
+        if pictureURL.hasPrefix("http") {
+            return false
+        } else {
+            return true
+        }
     }
     
     func update(id: Int, published: Bool) {

@@ -87,15 +87,23 @@ struct CommentsBody: Codable {
     let startPoint: Int
 }
 
+//used for following and follower body
+struct FollowBody: Codable, Hashable {
+    let displayName: String?
+    let imageURL: String?
+}
+
 //--------------------------------------------------
 //used for user data
 struct User: Codable, Hashable {
     let id: Int
     let userName: String
     let profile: Profile
+    var following: [Follow]
+    var follower: [Follow]
     var posts: [Post]?
     
-    static let example = User(id: 99999, userName: "", profile: .example, posts: [.example])
+    static let example = User(id: 99999, userName: "", profile: .example, following: [], follower: [], posts: [.example])
 }
 
 //used for user data
@@ -158,5 +166,13 @@ struct Comment: Codable, Hashable, Identifiable {
 struct CommentLike: Codable, Hashable {
     let displayName: String?
     let commentId: Int
+    let userId: Int
+}
+
+//used for following and follower
+struct Follow: Codable, Hashable {
+    let id: Int
+    let displayName: String?
+    let imageURL: String?
     let userId: Int
 }
