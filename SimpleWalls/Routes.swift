@@ -167,3 +167,18 @@ func unlikeComment(commentId: Int) async -> Data {
     let data = await deleteRequest(API: "/comment/like/\(commentId)")
     return data
 }
+
+//follow user
+func followUser(id: Int, displayName: String?, imageURL: String?) async -> Data {
+    let userData = FollowBody(displayName: displayName, imageURL: imageURL)
+    guard let encoded = try? JSONEncoder().encode(userData) else { return Data() }
+    
+    let data = await postRequest(body: encoded, API: "/user/follow/\(id)")
+    return data
+}
+
+//follow user
+func unfollowUser(userId: Int) async -> Data {
+    let data = await deleteRequest(API: "/user/follow/\(userId)")
+    return data
+}

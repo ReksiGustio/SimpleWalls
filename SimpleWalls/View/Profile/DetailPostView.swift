@@ -72,6 +72,14 @@ struct DetailPostView: View {
                             .padding(.vertical, 5)
                             .padding(.horizontal)
                         
+                        if isSharingPost {
+                            if let postId = post.imageURL {
+                                SharedPostView(global, post: .example, author: .example, path: $path, postId: Int(postId))
+                                    .padding(.horizontal)
+                                    .padding(.bottom, 10)
+                            }
+                        }
+                        
                         VStack {
                             if let postPicture {
                                 if let image = global.loadImage(data: postPicture) {
@@ -102,16 +110,26 @@ struct DetailPostView: View {
                         
                         Divider().padding(.horizontal)
                         
-                        Button {
-                            if likedBySelf { unlike() }
-                            else { like() }
-                        } label: {
-                            Label(likedBySelf ? "Liked" : "Like", systemImage: "hand.thumbsup.fill")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .tint(likedBySelf ? .blue : .primary)
-                        .padding(.top, 5)
-                        .padding(.horizontal)
+                        HStack {
+                            Button {
+                                if likedBySelf { unlike() }
+                                else { like() }
+                            } label: {
+                                Label(likedBySelf ? "Liked" : "Like", systemImage: "hand.thumbsup.fill")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .tint(likedBySelf ? .blue : .primary)
+                            .padding(.top, 5)
+                            .padding(.horizontal)
+                            
+                            NavigationLink {
+                                NewPostView(global, sharedPost: post) { _ in }
+                            } label: {
+                                Label("Share", systemImage: "arrowshape.turn.up.right.fill")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .tint(.primary)
+                        } // end of hstack
                         
                         Divider().padding(.horizontal)
                         
@@ -263,6 +281,15 @@ extension DetailPostView {
     
     var likedBySelf: Bool {
         return post.likes?.contains(where: { $0.userId == global.userData.id }) ?? false
+    }
+    
+    var isSharingPost: Bool {
+        guard let pictureURL = post.imageURL else { return false }
+        if pictureURL.hasPrefix("http") {
+            return false
+        } else {
+            return true
+        }
     }
     
     func downloadUser(_ id: Int) {

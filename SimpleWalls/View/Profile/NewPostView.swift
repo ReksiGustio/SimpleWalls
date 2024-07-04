@@ -22,6 +22,8 @@ struct NewPostView: View {
     @State private var displayPicture: Image?
     @State private var pictureURL: String?
     
+    @State private var sharedPost: Post?
+    
     @State private var showProgress = false
     var sentPost: (Post) -> Void
     
@@ -49,6 +51,14 @@ struct NewPostView: View {
                     Text(validationMessage)
                         .foregroundStyle(.red)
                         .padding(.vertical, 20)
+                    
+                    if isSharingPost {
+                        Text("Attached post").foregroundStyle(.secondary)
+                        if let sharedPost {
+                            SharedPostView(global, post: sharedPost, author: sharedPost.author ?? .example, path: .constant(NavigationPath()), postId: nil)
+                                .disabled(true)
+                        }
+                    }
                     
                     if let displayPicture {
                         ZStack {
@@ -79,6 +89,7 @@ struct NewPostView: View {
                         }
                     }
                     .buttonStyle(BorderedProminentButtonStyle())
+                    .disabled(isSharingPost)
                     .padding(.vertical)
                     
                     Spacer()
@@ -116,19 +127,33 @@ struct NewPostView: View {
         .disabled(showProgress)
     } // end of body
     
-    init(_ global: Global, sentPost: @escaping (Post) -> Void) {
+    init(_ global: Global, sharedPost: Post? = nil, sentPost: @escaping (Post) -> Void) {
         self.global = global
+        self.sharedPost = sharedPost
         self.sentPost = sentPost
+        
+        if let sharedPost {
+            _pictureURL = State(initialValue: "\(sharedPost.id)")
+        }
     }
     
 }
 
 #Preview {
-    NewPostView(Global()) { _ in }
+    NewPostView(Global(), sharedPost: .example) { _ in }
 }
 
 //function and computed properties here
 extension NewPostView {
+    
+    var isSharingPost: Bool {
+        guard let pictureURL else { return false }
+        if pictureURL.hasPrefix("http") {
+            return false
+        } else {
+            return true
+        }
+    }
     
     func validate() {
         let text = title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -153,8 +178,6 @@ extension NewPostView {
             Task {
                 await uploadRequest(image: picture ?? Data(), fieldName: "post", id: "\(id)")
             }
-        } else {
-            pictureURL = nil
         }
         
         Task {

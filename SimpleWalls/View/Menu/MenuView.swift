@@ -43,6 +43,9 @@ struct MenuView: View {
             .navigationDestination(for: Post.self) { post in
                 DetailPostView(global, postId: post.id, authorId: post.authorId, commentTapped: tapped, path: $path)
             }
+            .navigationDestination(for: [Follow].self) { follows in
+                FollowView(global: global, path: $path, follows: follows)
+            }
             .alert("Log out your account?", isPresented: $showLogoutPrompt) {
                 Button("Confirm") { global.logout() }
                 Button("Cancel", role: .cancel) { }

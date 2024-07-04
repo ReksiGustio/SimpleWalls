@@ -35,8 +35,8 @@ struct PostPictureView: View {
                     .onAppear { Task { await downloadImage() } }
             } else {
                 Rectangle()
-                    .fill(.secondary)
-                    .frame(maxHeight: 300)
+                    .fill(.clear)
+                    .frame(height: 1)
                     .onAppear { Task { await downloadImage() } }
             }
         }
