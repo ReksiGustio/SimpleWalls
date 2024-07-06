@@ -10,3 +10,4 @@ Simple Walls is an application that let you post either text or picture and let 
  - Profile picture.
  - In App pop-up message.
  - Custom background color.
+ - In App notification system.
