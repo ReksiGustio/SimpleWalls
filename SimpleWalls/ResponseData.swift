@@ -93,6 +93,14 @@ struct FollowBody: Codable, Hashable {
     let imageURL: String?
 }
 
+//used for sending notification
+struct NotificationBody: Codable {
+    let object: String
+    let userImage: String?
+    let postId: Int?
+    let ownerId: Int
+}
+
 //--------------------------------------------------
 //used for user data
 struct User: Codable, Hashable {
@@ -175,4 +183,17 @@ struct Follow: Codable, Hashable {
     let displayName: String?
     let imageURL: String?
     let userId: Int
+}
+
+struct Notification_: Codable, Identifiable {
+    let id: Int
+    let object: String
+    var read: Bool
+    let createdAt: String
+    let postId: Int?
+    let userId: Int
+    let userImage: String?
+    let ownerId: Int
+    
+    static let example = Notification_(id: 99999, object: "", read: true, createdAt: "", postId: nil, userId: 1, userImage: nil, ownerId: 2)
 }

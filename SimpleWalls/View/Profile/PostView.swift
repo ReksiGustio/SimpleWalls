@@ -229,11 +229,13 @@ extension PostView {
             print("liking post")
             let response = await likePost(userId: global.userData.id, postId: post.id, displayName: global.userData.profile.name)
             
+            let title = "\"\(post.title ?? "")\""
+            let object = "\(global.userData.profile.name ?? "Someone") liked your post: \(title)"
+            
             if let data = try? JSONDecoder().decode(ResponseData<Post>.self, from: response) {
+                let _ = await createNotification(object: object, userImage: global.userData.profile.profilePicture, postId: post.id, ownerId: post.authorId)
+                
                 post = data.data
-                global.message = data.message
-                withAnimation { global.showMessage = true }
-                global.timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
             } else {
                 global.errorHandling(response: response)
             }
@@ -246,10 +248,10 @@ extension PostView {
             let response = await unlikePost(postId: post.id)
             
             if let data = try? JSONDecoder().decode(ResponseData<Post>.self, from: response) {
+                let object = "liked your post"
+                let _ = await deleteNotification(object: object, ownerId: post.authorId)
+                
                 post = data.data
-                global.message = data.message
-                withAnimation { global.showMessage = true }
-                global.timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
             } else {
                 global.errorHandling(response: response)
             }

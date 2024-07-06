@@ -15,6 +15,7 @@ struct CommentView: View {
     @State private var viewState = ViewState.downloading
     @State private var displayPicture: Image?
     @State private var picture: Data?
+    let postAuthorId: Int
     
     var body: some View {
         if viewState == .downloaded {
@@ -98,16 +99,17 @@ struct CommentView: View {
         }// end if
     } // end of body
     
-    init(_ global: Global, comment: Comment, path: Binding<NavigationPath>) {
+    init(_ global: Global, comment: Comment, authorId: Int, path: Binding<NavigationPath>) {
         self.global = global
         self.comment = comment
+        postAuthorId = authorId
         _path = path
         _picture = State(initialValue: UserDefaults.standard.data(forKey: "userId:\(comment.userId ?? 0)") ?? nil)
     }
 }
 
 #Preview {
-    CommentView(Global(), comment: .example, path: .constant(NavigationPath()))
+    CommentView(Global(), comment: .example, authorId: -1, path: .constant(NavigationPath()))
 }
 
 extension CommentView {
@@ -172,11 +174,13 @@ extension CommentView {
             print("liking comment")
             let response = await likeComment(userId: global.userData.id, commentId: comment.id, displayName: global.userData.profile.name)
             
+            let text = "\"\(comment.text ?? "")\""
+            let object = "\(global.userData.profile.name ?? "Someone") liked your comment: \(text)"
+            
             if let data = try? JSONDecoder().decode(ResponseData<Comment>.self, from: response) {
+                let _ = await createNotification(object: object, userImage: global.userData.profile.profilePicture, postId: comment.postId, ownerId: postAuthorId)
+                
                 comment = data.data
-                global.message = data.message
-                withAnimation { global.showMessage = true }
-                global.timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
             } else {
                 global.errorHandling(response: response)
             }
@@ -189,10 +193,10 @@ extension CommentView {
             let response = await unlikeComment(commentId: comment.id)
             
             if let data = try? JSONDecoder().decode(ResponseData<Comment>.self, from: response) {
+                let object = "liked your comment"
+                let _ = await deleteNotification(object: object, ownerId: postAuthorId)
+                
                 comment = data.data
-                global.message = data.message
-                withAnimation { global.showMessage = true }
-                global.timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
             } else {
                 global.errorHandling(response: response)
             }

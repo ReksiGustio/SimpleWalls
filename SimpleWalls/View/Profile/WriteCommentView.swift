@@ -20,7 +20,7 @@ struct WriteCommentView: View {
     @State private var displayPicture: Image?
     @State private var showProgress = false
     
-    let postId: Int
+    let post: Post
     let commentTapped: Bool
     var sent: (Comment) -> Void
     var customColor: Color {
@@ -103,16 +103,16 @@ struct WriteCommentView: View {
         }
     } // end of body
     
-    init(_ global: Global, postId: Int, commentTapped: Bool, sent: @escaping (Comment) -> Void) {
+    init(_ global: Global, post: Post, commentTapped: Bool, sent: @escaping (Comment) -> Void) {
         self.global = global
-        self.postId = postId
+        self.post = post
         self.commentTapped = commentTapped
         self.sent = sent
     }
 }
 
 #Preview {
-    WriteCommentView(Global(), postId: 1, commentTapped: false) { _ in }
+    WriteCommentView(Global(), post: .example, commentTapped: false) { _ in }
 }
 
 //function and computed properties here
@@ -142,12 +142,18 @@ extension WriteCommentView {
             imageURL = nil
         }
         
+        let object = "\(global.userData.profile.name ?? "Someone") commented your post: \(text)"
+        
         Task {
-            let response = await uploadComment(text: text, imageURL: imageURL, postId: postId, userId: global.userData.id)
+            let response = await uploadComment(text: text, imageURL: imageURL, postId: post.id, userId: global.userData.id)
+            
             global.errorHandling(response: response)
+            
             if global.message.hasPrefix("You ") {
+                let _ = await createNotification(object: object, userImage: global.userData.profile.profilePicture, postId: post.id, ownerId: post.authorId)
+                
                 print("comment successfully")
-                sent(Comment(id:.random(in: 9999...99999), text: text, imageURL: imageURL, likes: [], createdAt: "", updatedAt: "", userId: global.userData.id, postId: postId))
+                sent(Comment(id:.random(in: 9999...99999), text: text, imageURL: imageURL, likes: [], createdAt: "", updatedAt: "", userId: global.userData.id, postId: post.id))
                 text = ""
                 imageURL = nil
                 picture = nil

@@ -182,3 +182,37 @@ func unfollowUser(userId: Int) async -> Data {
     let data = await deleteRequest(API: "/user/follow/\(userId)")
     return data
 }
+
+//create notification
+func createNotification(object: String, userImage: String?, postId: Int?, ownerId: Int) async -> Data {
+    let userData = NotificationBody(object: object, userImage: userImage, postId: postId, ownerId: ownerId)
+    guard let encoded = try? JSONEncoder().encode(userData) else { return Data() }
+    
+    let data = await postRequest(body: encoded, API: "/notification")
+    return data
+}
+
+//delete notification
+func deleteNotification(object: String, ownerId: Int) async -> Data {
+    let userData = NotificationBody(object: object, userImage: nil, postId: nil, ownerId: ownerId)
+    guard let encoded = try? JSONEncoder().encode(userData) else { return Data() }
+    
+    let data = await postRequest(body: encoded, API: "/notification/delete")
+    return data
+}
+
+//fetch notifications
+func fetchNotifications(startPoint: Int) async -> Data {
+    let userData = PostsBody(startPoint: startPoint)
+    guard let encoded = try? JSONEncoder().encode(userData) else { return Data() }
+    
+    let data = await postRequest(body: encoded, API: "/notifications")
+    return data
+}
+
+//fetch notifications
+func updateNotification(id: Int) async -> Data {
+    let data = await putRequest(body: Data(), API: "/notification/\(id)")
+    return data
+}
+
