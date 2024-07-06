@@ -298,8 +298,12 @@ extension ProfileView {
         Task {
             let response = await followUser(id: user.id, displayName: name, imageURL: profile.profilePicture)
             
+            let object = "\(global.userData.profile.name ?? "Someone") started following you"
+            
             //get data success
             if let data = try? JSONDecoder().decode(ResponseData<Follow>.self, from: response) {
+                let _ = await createNotification(object: object, userImage: global.userData.profile.profilePicture, postId: nil, ownerId: user.id)
+                
                 let profile = global.userData.profile
                 global.userData.following.append(data.data)
                 user.follower.append(Follow(id: global.userData.id, displayName: profile.name, imageURL: profile.profilePicture, userId: user.id))
@@ -321,6 +325,9 @@ extension ProfileView {
             //get data success
             global.errorHandling(response: response)
             if global.message.hasPrefix("Unfollow") {
+                let object = "started following you"
+                let _ = await deleteNotification(object: object, ownerId: user.id)
+                
                 global.showMessage = false
                 global.userData.following.removeAll(where: { $0.id == user.id })
                 user.follower.removeAll(where: { $0.id == global.userData.id })

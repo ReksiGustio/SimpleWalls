@@ -18,6 +18,11 @@ struct DashboardView: View {
                     Label("Walls", systemImage: "mail.stack.fill")
                 }
             
+            NotificationView(global)
+                .tabItem {
+                    Label("Notifications", systemImage: "bell.fill")
+                }
+            
             MenuView(global)
                 .tabItem {
                     Label("Menu", systemImage: "line.3.horizontal")

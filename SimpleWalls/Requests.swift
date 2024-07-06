@@ -9,7 +9,7 @@ import Foundation
 
 //base HTTP GET request
 func getRequest(API: String) async -> Data {
-    guard let url = URL(string: "http://172.20.57.25:3000\(API)") else { return Data() }
+    guard let url = URL(string: "http://192.168.1.11:3000\(API)") else { return Data() }
     var request = URLRequest(url: url)
     request.timeoutInterval = 5
     
@@ -25,7 +25,7 @@ func getRequest(API: String) async -> Data {
 
 //base HTTP POST request
 func postRequest(body: Data, API: String) async -> Data {
-    guard let url = URL(string: "http://172.20.57.25:3000\(API)") else { return Data() }
+    guard let url = URL(string: "http://192.168.1.11:3000\(API)") else { return Data() }
     var request = URLRequest(url: url)
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "POST"
@@ -43,7 +43,7 @@ func postRequest(body: Data, API: String) async -> Data {
 
 //base HTTP PUT request
 func putRequest(body: Data, API: String) async -> Data {
-    guard let url = URL(string: "http://172.20.57.25:3000\(API)") else { return Data() }
+    guard let url = URL(string: "http://192.168.1.11:3000\(API)") else { return Data() }
     var request = URLRequest(url: url)
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "PUT"
@@ -61,7 +61,7 @@ func putRequest(body: Data, API: String) async -> Data {
 
 //base HTTP DELETE request
 func deleteRequest(API: String) async -> Data {
-    guard let url = URL(string: "http://172.20.57.25:3000\(API)") else { return Data() }
+    guard let url = URL(string: "http://192.168.1.11:3000\(API)") else { return Data() }
     var request = URLRequest(url: url)
     request.httpMethod = "DELETE"
     request.timeoutInterval = 5
@@ -97,7 +97,7 @@ func uploadRequest(image: Data, fieldName: String, id: String) async {
     let boundary = generateBoundaryString()
     let body = createBody(boundary: boundary, name: "\(fieldName)_pic", fieldName: "\(fieldName)_pic.jpg", image: image)
     
-    let url = URL(string: "http://172.20.57.25:3000/upload/\(fieldName)/\(id)")!
+    let url = URL(string: "http://192.168.1.11:3000/upload/\(fieldName)/\(id)")!
     var request = URLRequest.init(url: url)
     request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "POST"
